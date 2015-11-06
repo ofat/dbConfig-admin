@@ -42,6 +42,9 @@ class AdminController extends \BaseController
                 {
                     foreach($value as $key=>$v)
                     {
+                        isset($oldValue[$key]) or $oldValue[$key] = '';
+                        isset($oldComment[$key]) or $oldComment[$key] = '';
+
                         if($oldValue[$key] != $value[$key] || $oldComment[$key] != $comment[$key])
                         {
                             LogItem::create([
@@ -62,5 +65,13 @@ class AdminController extends \BaseController
         }
 
         return \Redirect::back();
+    }
+
+    public function logs()
+    {
+        $logs = LogItem
+                ::orderBy('created_at', 'desc')
+                ->paginate();
+        return \View::make('dbConfigAdmin::logs', compact('logs'));
     }
 }

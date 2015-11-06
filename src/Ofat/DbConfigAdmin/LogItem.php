@@ -18,7 +18,7 @@ class LogItem extends \Eloquent
         'updated_at'
     ];
 
-    public function __construct(array $attributes)
+    public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
         $this->table = \Config::get('dbConfigAdmin.logs_table', 'settings_logs');
