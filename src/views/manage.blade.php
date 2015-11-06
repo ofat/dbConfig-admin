@@ -18,16 +18,28 @@
         <div role="tabpanel" class="tab-pane" id="tab-{{ $slug }}">
             {{ Form::open(['route' => 'dbConfigAdmin.store']) }}
             <div class="row">
-                <div class="col-md-12 text-right">
+                <div class="col-md-12">
                     <button type="submit" class="btn btn-primary">Save</button>
                 </div>
             </div>
+            <br>
             <div class="row">
             @foreach($tab['items'] as $item)
             <div class="col-md-6">
                 <div class="form-group">
-                    <label>{{ $item['label'] }}</label>
-                    @include('dbConfigAdmin::fields.'.$item['type'])
+                    <div class="row">
+                        <div class="col-md-7">
+                            <label>{{ $item['label'] }}</label>
+                        </div>
+                        <div class="col-md-4 text-right">
+                            <a href="#" class="btn btn-sm btn-info btn-add">Add item</a>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="fieldBlock" id="fieldBlock-{{ $item['type'] }}">
+                        @include('dbConfigAdmin::fields.'.$item['type'])
+                    </div>
+                    <a href="#" class="btn btn-sm btn-info btn-add">Add item</a>
                 </div>
             </div>
             @endforeach
@@ -48,7 +60,18 @@
     $('#settingsTabs a').click(function (e) {
         e.preventDefault();
         $(this).tab('show');
-    })
+    });
+    $(".btn-add").click(function(e){
+        e.preventDefault();
+        var fieldBlock = $(this).closest('.form-group').find('.fieldBlock');
+        var layout = fieldBlock.find('.form-group').first().clone();
+        layout.find('input').val('').attr('value', '');
+        fieldBlock.append(layout);
+    });
+    $(document).on('click', '.btn-remove', function(e){
+        e.preventDefault();
+        $(this).closest('.form-group').remove();
+    });
 })(jQuery);
 </script>
 @stop
