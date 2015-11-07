@@ -35,8 +35,8 @@ class AdminController extends \BaseController
                 $oldValue = \DbConfig::get($field);
                 $oldComment = \DbConfig::get($field . '_comment');
 
-//                \DbConfig::forget($field);
-//                \DbConfig::forget($field . '_comment');
+                \DbConfig::forget($field);
+                \DbConfig::forget($field . '_comment');
 
                 if(is_array($value))
                 {
