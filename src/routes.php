@@ -3,17 +3,17 @@
  * @author: Vitaliy Ofat <i@vitaliy-ofat.com>
  */
 
-Route::post('admin/settings/store', [
+Route::post('settings/store', [
     'uses' => 'Ofat\DbConfigAdmin\AdminController@store',
     'as' => 'dbConfigAdmin.store'
 ]);
 
-Route::get('admin/settings/logs', [
+Route::get('settings/logs', [
     'uses' => 'Ofat\DbConfigAdmin\AdminController@logs',
     'as' => 'dbConfigAdmin.logs'
 ]);
 
-Route::get('admin/settings/{page}', [
+Route::get('settings/{page}', [
     'uses' => 'Ofat\DbConfigAdmin\AdminController@manage',
     'as' => 'dbConfigAdmin.manage'
 ]);

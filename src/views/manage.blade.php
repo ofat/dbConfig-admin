@@ -17,6 +17,7 @@
         @foreach($page['tabs'] as $slug=>$tab)
         <div role="tabpanel" class="tab-pane" id="tab-{{ $slug }}">
             {{ Form::open(['route' => 'dbConfigAdmin.store']) }}
+            <input type="hidden" name="tab" value="tab-{{ $slug }}">
             <div class="row">
                 <div class="col-md-12">
                     <button type="submit" class="btn btn-primary">Save</button>
@@ -32,14 +33,14 @@
                             <label>{{ $item['label'] }}</label>
                         </div>
                         <div class="col-md-4 text-right">
-                            <a href="#" class="btn btn-sm btn-info btn-add">Add item</a>
+                            <a href="#" class="btn btn-sm btn-info btn-add top">Add item</a>
                         </div>
                     </div>
                     <br>
                     <div class="fieldBlock" id="fieldBlock-{{ $item['type'] }}">
                         @include('dbConfigAdmin::fields.'.$item['type'])
                     </div>
-                    <a href="#" class="btn btn-sm btn-info btn-add">Add item</a>
+                    <a href="#" class="btn btn-sm btn-info btn-add bottom">Add item</a>
                 </div>
             </div>
             @endforeach
@@ -66,12 +67,20 @@
         var fieldBlock = $(this).closest('.form-group').find('.fieldBlock');
         var layout = fieldBlock.find('.form-group').first().clone();
         layout.find('input').val('').attr('value', '');
-        fieldBlock.append(layout);
+        if($(this).hasClass('bottom'))
+            fieldBlock.append(layout);
+        else
+            fieldBlock.prepend(layout);
     });
     $(document).on('click', '.btn-remove', function(e){
         e.preventDefault();
         $(this).closest('.form-group').remove();
     });
+
+    var hash = location.hash;
+    if($('a[href="'+hash+'"]').length) {
+        $('a[href="'+hash+'"]:first').tab('show');
+    }
 })(jQuery);
 </script>
 @stop

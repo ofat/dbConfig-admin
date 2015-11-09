@@ -9,10 +9,7 @@ class LogItem extends \Eloquent
 {
     protected $fillable = [
         'field',
-        'old_value',
-        'new_value',
-        'old_comment',
-        'new_comment',
+        'diff',
         'user_id',
         'created_at',
         'updated_at'

@@ -21,7 +21,7 @@ class DbConfigAdminServiceProvider extends ServiceProvider {
 	{
 		$this->package('ofat/dbConfigAdmin');
 
-		//ViewsIntegration::apply('dbConfigAdmin');
+		ViewsIntegration::apply('dbConfigAdmin');
 
 		include __DIR__ . '/../../routes.php';
 	}

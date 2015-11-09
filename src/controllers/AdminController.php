@@ -6,6 +6,7 @@
 namespace Ofat\DbConfigAdmin;
 
 use Config;
+use Ofat\DbConfigAdmin\Utils\Diff;
 
 class AdminController extends \BaseController
 {
@@ -38,33 +39,51 @@ class AdminController extends \BaseController
                 \DbConfig::forget($field);
                 \DbConfig::forget($field . '_comment');
 
-                if(is_array($value))
+                foreach($value as $key=>$v)
                 {
-                    foreach($value as $key=>$v)
-                    {
-                        isset($oldValue[$key]) or $oldValue[$key] = '';
-                        isset($oldComment[$key]) or $oldComment[$key] = '';
-
-                        if($oldValue[$key] != $value[$key] || $oldComment[$key] != $comment[$key])
-                        {
-                            LogItem::create([
-                                'field' => $field.'.'.$key,
-                                'old_value' => $oldValue[$key],
-                                'new_value' => $value[$key],
-                                'old_comment' => $oldComment[$key],
-                                'new_comment' => $comment[$key],
-                                'user_id' => \Auth::user()->getAuthIdentifier()
-                            ]);
-                        }
-                    }
+                    $value[$key] = preg_replace('/[^A-Za-z0-9\-\.\*\@]/', '', $v);
+                    isset($oldValue[$key]) or $oldValue[$key] = '';
+                    isset($oldComment[$key]) or $oldComment[$key] = '';
                 }
 
                 \DbConfig::store($field, $value);
                 \DbConfig::store($field . '_comment', $comment);
+
+                $oldData = '';
+                $newData = '';
+                foreach($oldValue as $k=>$v)
+                {
+                    $oldData .= $v.' - '.$oldComment[$k]."\n";
+                }
+                foreach($value as $k=>$v)
+                {
+                    $newData .= $v.' - '.$comment[$k]."\n";
+                }
+
+                $diff = Diff::compare($oldData, $newData);
+                foreach($diff as $key=>$item)
+                {
+                    if($item[1] == Diff::UNMODIFIED)
+                    {
+                        unset($diff[$key]);
+                    }
+                }
+
+                if(!empty($diff))
+                {
+                    LogItem::create([
+                        'field' => $field,
+                        'diff' => json_encode($diff),
+                        'user_id' => \Auth::user()->getAuthIdentifier()
+                    ]);
+                }
             });
         }
 
-        return \Redirect::back();
+        $previous = \URL::previous();
+        $tab = \Input::get('tab');
+
+        return \Redirect::to($previous.'#'.$tab);
     }
 
     public function logs()
@@ -72,6 +91,10 @@ class AdminController extends \BaseController
         $logs = LogItem
                 ::orderBy('created_at', 'desc')
                 ->paginate();
+        foreach($logs as $key=>$item)
+        {
+            $logs[$key]->diff = array_values( json_decode($item->diff, true) );
+        }
         return \View::make('dbConfigAdmin::logs', compact('logs'));
     }
 }

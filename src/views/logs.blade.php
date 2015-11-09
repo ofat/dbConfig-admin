@@ -20,10 +20,7 @@ Settings Logs
                 <td>{{ $logItem->id }}</td>
                 <td>{{ $logItem->user_id }}</td>
                 <td>
-                    {{ $logItem->old_value }} - <em>{{ $logItem->new_value }}</em>
-                    <p class="text-muted">
-                        {{ $logItem->old_comment }} - <em>{{ $logItem->new_comment }}</em>
-                    </p>
+                    {{ \Ofat\DbConfigAdmin\Utils\Diff::toHTML($logItem->diff) }}
                 </td>
                 <td>
                     {{ $logItem->created_at }}
