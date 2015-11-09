@@ -55,6 +55,7 @@
         @endforeach
     </div>
 
+<script>if (!window.jQuery) { document.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"><\/script>'); }</script>
 <script>
 (function($){
     $("#settingsTabs a:first").tab('show');
