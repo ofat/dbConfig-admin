@@ -93,7 +93,8 @@ class AdminController extends \BaseController
                 ->paginate();
         foreach($logs as $key=>$item)
         {
-            $logs[$key]->diff = array_values( json_decode($item->diff, true) );
+            $diff = json_decode($item->diff, true);
+            $logs[$key]->diff = is_array($diff) ? array_values($diff) : $diff;
         }
         return \View::make('dbConfigAdmin::logs', compact('logs'));
     }
