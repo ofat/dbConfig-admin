@@ -45,11 +45,11 @@ class Diff
         if ($compareCharacters) {
             $sequence1 = $string1;
             $sequence2 = $string2;
-            $end1 = strlen($string1) - 1;
-            $end2 = strlen($string2) - 1;
+            $end1 = mb_strlen($string1) - 1;
+            $end2 = mb_strlen($string2) - 1;
         } else {
-            $sequence1 = preg_split('/\R/', $string1);
-            $sequence2 = preg_split('/\R/', $string2);
+            $sequence1 = preg_split('/\R/u', $string1);
+            $sequence2 = preg_split('/\R/u', $string2);
             $end1 = count($sequence1) - 1;
             $end2 = count($sequence2) - 1;
         }
@@ -81,7 +81,7 @@ class Diff
         }
         while (count($partialDiff) > 0) $diff[] = array_pop($partialDiff);
         for ($index = $end1 + 1;
-             $index < ($compareCharacters ? strlen($sequence1) : count($sequence1));
+             $index < ($compareCharacters ? mb_strlen($sequence1) : count($sequence1));
              $index++) {
             $diff[] = array($sequence1[$index], self::UNMODIFIED);
         }
