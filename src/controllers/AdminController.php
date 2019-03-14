@@ -27,13 +27,13 @@ class AdminController extends \BaseController
      */
     public function store()
     {
-        $fields = \Input::get('field', []);
+        $fields   = \Input::get('field', []);
         $comments = \Input::get('comment', []);
         foreach($fields as $field=>$value) {
             $comment = isset($comments[$field]) ? $comments[$field] : '';
 
             \DB::transaction(function () use ($field, $value, $comment) {
-                $oldValue = \DbConfig::get($field);
+                $oldValue   = \DbConfig::get($field);
                 $oldComment = \DbConfig::get($field . '_comment');
 
                 \DbConfig::forget($field);
@@ -72,8 +72,8 @@ class AdminController extends \BaseController
                 if(!empty($diff))
                 {
                     LogItem::create([
-                        'field' => $field,
-                        'diff' => json_encode($diff),
+                        'field'   => $field,
+                        'diff'    => json_encode($diff),
                         'user_id' => \Auth::user()->getAuthIdentifier()
                     ]);
                 }
@@ -81,7 +81,7 @@ class AdminController extends \BaseController
         }
 
         $previous = \URL::previous();
-        $tab = \Input::get('tab');
+        $tab      = \Input::get('tab');
 
         return \Redirect::to($previous.'#'.$tab);
     }
@@ -93,7 +93,7 @@ class AdminController extends \BaseController
                 ->paginate();
         foreach($logs as $key=>$item)
         {
-            $diff = json_decode($item->diff, true);
+            $diff               = json_decode($item->diff, TRUE);
             $logs[$key]->diff = is_array($diff) ? array_values($diff) : $diff;
         }
         return \View::make('dbConfigAdmin::logs', compact('logs'));
