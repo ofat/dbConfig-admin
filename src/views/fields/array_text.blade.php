@@ -4,7 +4,7 @@
         <input type="text" name="field[{{ $item['field'] }}][]" value="{{ $value }}" class="form-control">
     </div>
     <div class="col-md-5">
-        <input type="text" name="comment[{{ $item['field'] }}][]" value="{{ DbConfig::get( $item['field'].'_comment.'.$key ) }}" class="form-control" placeholder="Comment">
+        <input type="text" name="comment[{{{ $item['field'] }}}][]" value="{{{ DbConfig::get( $item['field'].'_comment.'.$key ) }}}" class="form-control" placeholder="Comment">
     </div>
     <div class="col-md-1">
         <a href="#" class="btn btn-warning btn-remove">
