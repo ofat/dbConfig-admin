@@ -6,6 +6,8 @@
 namespace Ofat\DbConfigAdmin;
 
 use Config;
+use DB;
+use Input;
 use Ofat\DbConfigAdmin\Utils\Diff;
 
 class AdminController extends \BaseController
@@ -88,14 +90,22 @@ class AdminController extends \BaseController
 
     public function logs()
     {
-        $logs = LogItem
-                ::orderBy('created_at', 'desc')
-                ->paginate();
+        $input = Input::only(['search'], []);
+        $query = LogItem::orderBy('created_at', 'desc');
+        if(key_exists('search', $input)){
+            $query->where(
+                'diff',
+                'like',
+                '%' . $input['search'] . '%'
+            );
+        }
+
+        $logs = $query->paginate();
         foreach($logs as $key=>$item)
         {
             $diff               = json_decode($item->diff, TRUE);
             $logs[$key]->diff = is_array($diff) ? array_values($diff) : $diff;
         }
-        return \View::make('dbConfigAdmin::logs', compact('logs'));
+        return \View::make('dbConfigAdmin::logs', compact('logs', 'input'));
     }
 }

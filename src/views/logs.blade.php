@@ -5,6 +5,17 @@ Settings Logs
 @stop
 
 @section('main')
+    <div class="row">
+        {{ Form::open(['method'=>'get']) }}
+        <div class="col-md-3">
+            {{ Form::text('search', @$input['search'], ['class'=>'form-control', 'placeholder'=>'Search...']) }}
+        </div>
+        <div class="col-md-2">
+            {{ Form::submit('submit', ['class'=>'form-control btn btn-primary', 'placeholder'=>'Search...']) }}
+        </div>
+        {{ Form::close() }}
+    </div>
+    <br>
     <table class="table table-bordered table-condensed table-hover">
         <thead>
             <tr>
