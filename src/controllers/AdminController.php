@@ -92,18 +92,20 @@ class AdminController extends \BaseController
     {
         $input = Input::only(['search'], []);
         $query = LogItem::orderBy('created_at', 'desc');
+        $str_search = preg_replace('/\\\/','\\\\\\\\\\',preg_replace('/^"(.*)"$/','\\1',json_encode($input['search'])));
+
         if(key_exists('search', $input)){
             $query->where(
                 'diff',
                 'like',
-                '%' . $input['search'] . '%'
+                '%' . $str_search . '%'
             );
         }
 
         $logs = $query->paginate();
         foreach($logs as $key=>$item)
         {
-            $diff               = json_decode($item->diff, TRUE);
+            $diff             = json_decode($item->diff, TRUE);
             $logs[$key]->diff = is_array($diff) ? array_values($diff) : $diff;
         }
         return \View::make('dbConfigAdmin::logs', compact('logs', 'input'));
