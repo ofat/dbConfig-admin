@@ -90,11 +90,11 @@ class AdminController extends \BaseController
 
     public function logs()
     {
-        $input = Input::only(['search'], []);
+        $input = Input::only(['search']);
         $query = LogItem::orderBy('created_at', 'desc');
-        $str_search = preg_replace('/\\\/','\\\\\\\\\\',preg_replace('/^"(.*)"$/','\\1',json_encode($input['search'])));
 
-        if(key_exists('search', $input)){
+        if($input['search'] !== null){
+            $str_search = preg_replace('/\\\/','\\\\\\\\\\',preg_replace('/^"(.*)"$/','\\1',json_encode($input['search'])));
             $query->where(
                 'diff',
                 'like',
