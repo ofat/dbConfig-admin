@@ -38,7 +38,7 @@
                     </div>
                     <br>
                     <div class="fieldBlock" id="fieldBlock-{{ $item['type'] }}">
-                        @include('dbConfigAdmin::fields.'.$item['type'])
+                        @include('dbConfigAdmin::fields.'.$item['type'], key_exists('data', $item) ? $item['data'] : [])
                     </div>
                     <a href="#" class="btn btn-sm btn-info btn-add bottom">Add item</a>
                 </div>
@@ -66,8 +66,19 @@
     $(".btn-add").click(function(e){
         e.preventDefault();
         var fieldBlock = $(this).closest('.form-group').find('.fieldBlock');
-        var layout = fieldBlock.find('.form-group').first().clone();
-        layout.find('input').val('').attr('value', '');
+        var layout   = fieldBlock.find('.form-group').first().clone();
+        var next_key = parseInt(layout.find('input').attr('name').replace(/^.*\[(\d+)\](\[\])?$/, '$1')) + 1;
+
+        layout.find('input,select,checkbox,textarea').each(function(){
+            var input = $(this);
+            input.val('').attr('value', '');
+            var input_name = input.is('select')
+                ? input.attr('name').replace(/\[\d+\]\[\]$/g, '[' + next_key + '][]')
+                : input.attr('name').replace(/\[\d+\]$/g, '[' + next_key + ']');
+
+            input.attr('name', input_name);
+        });
+
         if($(this).hasClass('bottom'))
             fieldBlock.append(layout);
         else

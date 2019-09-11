@@ -31,35 +31,44 @@ class AdminController extends \BaseController
     {
         $fields   = \Input::get('field', []);
         $comments = \Input::get('comment', []);
+        $selects  = \Input::get('select', []);
+
         foreach($fields as $field=>$value) {
             $comment = isset($comments[$field]) ? $comments[$field] : '';
+            $select  = isset($selects[$field])  ? $selects[$field]  : '';
 
-            \DB::transaction(function () use ($field, $value, $comment) {
+            \DB::transaction(function () use ($field, $value, $comment, $select) {
                 $oldValue   = \DbConfig::get($field);
                 $oldComment = \DbConfig::get($field . '_comment');
+                $oldSelect  = \DbConfig::get($field . '_select');
 
                 \DbConfig::forget($field);
                 \DbConfig::forget($field . '_comment');
+                \DbConfig::forget($field . '_select');
 
                 foreach($value as $key=>$v)
                 {
                     $value[$key] = preg_replace('/[^A-Za-z0-9\-\.\*\@]/', '', $v);
-                    isset($oldValue[$key]) or $oldValue[$key] = '';
+                    isset($oldValue[$key])   or $oldValue[$key] = '';
                     isset($oldComment[$key]) or $oldComment[$key] = '';
+                    isset($oldSelect[$key])  or $oldSelect[$key] = '';
                 }
 
                 \DbConfig::store($field, $value);
                 \DbConfig::store($field . '_comment', $comment);
+                if($select) {
+                    \DbConfig::store($field . '_select', $select);
+                }
 
                 $oldData = '';
                 $newData = '';
                 foreach($oldValue as $k=>$v)
                 {
-                    $oldData .= $v.' - '.$oldComment[$k]."\n";
+                    $oldData .= $v.' - '.$oldComment[$k].($oldSelect ? ' - '.json_encode($oldSelect[$k]) : '')."\n";
                 }
                 foreach($value as $k=>$v)
                 {
-                    $newData .= $v.' - '.$comment[$k]."\n";
+                    $newData .= $v.' - '.$comment[$k].($select ? ' - '.json_encode($select[$k]) : '')."\n";
                 }
 
                 $diff = Diff::compare($oldData, $newData);

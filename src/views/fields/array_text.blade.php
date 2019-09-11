@@ -1,4 +1,4 @@
-@foreach(DbConfig::get( $item['field'], [] ) as $key=>$value)
+@foreach(DbConfig::get( $item['field'], [''=>''] ) as $key=>$value)
 <div class="form-group row form-layout">
     <div class="col-md-5">
         <input type="text" name="field[{{ $item['field'] }}][]" value="{{ $value }}" class="form-control">
