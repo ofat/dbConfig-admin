@@ -34,6 +34,7 @@ class AdminController extends \BaseController
         $selects  = \Input::get('select', []);
 
         foreach($fields as $field=>$value) {
+            krsort($value);
             $comment = isset($comments[$field]) ? $comments[$field] : '';
             $select  = isset($selects[$field])  ? $selects[$field]  : '';
 
