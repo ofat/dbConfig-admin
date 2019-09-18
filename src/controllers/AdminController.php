@@ -65,11 +65,11 @@ class AdminController extends \BaseController
                 $newData = '';
                 foreach($oldValue as $k=>$v)
                 {
-                    $oldData .= $v.' - '.$oldComment[$k].($oldSelect ? ' - '.json_encode($oldSelect[$k]) : '')."\n";
+                    $oldData .= $v.' - '.$oldComment[$k].(key_exists($k, $oldSelect) ? ' - '.json_encode($oldSelect[$k]) : '')."\n";
                 }
                 foreach($value as $k=>$v)
                 {
-                    $newData .= $v.' - '.$comment[$k].($select ? ' - '.json_encode($select[$k]) : '')."\n";
+                    $newData .= $v.' - '.$comment[$k].(key_exists($k, $select) ? ' - '.json_encode($select[$k]) : '')."\n";
                 }
 
                 $diff = Diff::compare($oldData, $newData);
